@@ -1,29 +1,33 @@
+""" Identification of the missing spectra in the STLM acquisition.
+"""
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-data_path = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2024-09-03 #SG19 ALE W UHV LN/STL_16'
-dataname = "030924-16-STL-TriggerData.txt"  # File with all the triggers data
+DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/' \
+            '2024-09-03 #SG19 ALE W UHV LN/STL_16'
+DATA_NAME = "030924-16-STL-TriggerData.txt"  # File with all the triggers data
 
 # View of the transposed array
-trigger_data = np.loadtxt(os.path.join(data_path, dataname), skiprows=1).T
+trigger_data = np.loadtxt(os.path.join(DATA_PATH, DATA_NAME), skiprows=1).T
 
 time = trigger_data[0]
 STMtoSpec = trigger_data[1]
 SpectoSTM = trigger_data[2]
 
-ll = 700  # width ot x axis
-tr = 220
+LL = 700  # width ot x axis
+TR = 220
 
-for k in range(int(max(time)//ll) + 1):
-    # STM to spec triggers
+for k in range(int(max(time)//LL) + 1):
+    # STM to spec TRiggers
     plt.plot(time, STMtoSpec, 'b')
-    plt.xlim(ll*k, ll*(k+1))
+    plt.xlim(LL*k, LL*(k+1))
     plt.show()
 
     # spec to STM triggers
     plt.plot(time, SpectoSTM, 'r')
-    plt.xlim(ll*k, ll*(k+1))
+    plt.xlim(LL*k, LL*(k+1))
     plt.show()
 
 trigSTM = []
@@ -63,7 +67,7 @@ plt.show()
 l = []
 m = []
 for i in range(len(trigSTM) - 1):
-    if diff[i] < tr:
+    if diff[i] < TR:
         l.append(diff[i])
         m.append(i)
 
@@ -77,4 +81,4 @@ print(len(m))
 
 # m is the list of missing and perverted spectra
 print(m)
-np.savetxt(os.path.join(data_path, dataname.strip('.txt') + '_missing_spectra.txt'), m)
+np.savetxt(os.path.join(DATA_PATH, DATA_NAME[0:-4] + '_missing_spectra.txt'), m)
