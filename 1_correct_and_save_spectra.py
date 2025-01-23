@@ -211,5 +211,4 @@ def read_and_correct_data(datapath, dataname):
     selected_spectra = np.array(selected_spectra)
     np.save(os.path.join(datapath, name2), selected_spectra)
 
-
 read_and_correct_data(DATA_PATH_2, DATA_NAME)

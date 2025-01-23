@@ -1,27 +1,28 @@
+"""Functions to create images of a grid with one line colored each time and to concatenate images horizontally or vertically."""
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
-import imageio
-
 
 def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_path):
     """Create 32 images of a grid with one line colored each time
 
     Args:
-        grid_size (int): _number of points per line
-        image_size (int): size of one line (nm)
-        step_linescan (float): step between 2 points
-        missing_spectra (array): list of missing spectra and perverted spectra
-        saving_path (string): saving path
+        grid_size (int): Number of points per line.
+        image_size (int): Size of one line in nm.
+        step_linescan (float): step between 2 spectra in nm.
+        missing_spectra (list): List of missing spectra.
+        saving_path (str): Saving path.
     """
+
     for i in range(grid_size[0]):
 
         fig = plt.figure(1, figsize=[5, 5])
         ax = fig.add_subplot(111)
 
         # Return evenly spaced numbers over a specified interval
-        X = np.linspace(0.5*step_linescan, (grid_size[1]-0.5)
+        X = np.linspace(0.5 * step_linescan, (grid_size[1]-0.5)
                         * step_linescan, grid_size[1])
 
         for g in range(grid_size[1]):
@@ -46,7 +47,7 @@ def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_pa
             plt.plot((c+0.5)*step_linescan, (l+0.5) *
                      step_linescan, '.w', markersize=4)
 
-        savename = os.path.join(saving_path, 'line{}'.format(i))
+        savename = os.path.join(saving_path, f'line{i}')
 
         plt.rcParams.update({'font.size': 8})
         ax.xaxis.tick_top()
@@ -64,18 +65,16 @@ def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_pa
         plt.savefig(savename, dpi=300, bbox_inches='tight')
         plt.show()
 
-
 def get_concat_h(im1, im2, wm):
-    """Concatenates two images horizontally with an optional width margin (wm) 
-    and returns the resulting image.
+    """Concatenates two images horizontally with an optional width margin (wm) and returns the resulting image.
 
     Args:
-        im1 (Image): 1/2 image to concatenate
-        im2 (Image): 2/2 image to concatenate
+        im1 (Image): 1/2 image to concatenate.
+        im2 (Image): 2/2 image to concatenate.
         wm (float): Width margin, which specifies the gap or margin between the two concatenated images.
 
-    0Returns:
-        Image: resulting image
+    Returns:
+        Image: Resulting image.
     """
     dst = Image.new('RGB', (im1.width + wm, max(im1.height,
                     im2.height)), color=(255, 255, 255, 0))
@@ -84,18 +83,16 @@ def get_concat_h(im1, im2, wm):
     dst.paste(im2, (im1.width+wm-im2.width, 0))
     return dst
 
-
 def get_concat_v(im1, im2, hm):
-    """Concatenates two images vertically with an optional height margin (hm) 
-    and returns the resulting image.
+    """Concatenates two images vertically with an optional height margin (hm) and returns the resulting image.
 
     Args:
-        im1 (Image): 1/2 image to concatenate
-        im2 (Image): 2/2 image to concatenate
+        im1 (Image): 1/2 image to concatenate.
+        im2 (Image): 2/2 image to concatenate.
         hm (float): Height margin, which specifies the gap or margin between the two concatenated images.
 
     Returns:
-        Image: resulting image
+        Image: Resulting image.
     """
     dst = Image.new('RGB', (max(im1.width, im2.width),
                     im1.height + hm), color=(255, 255, 255, 0))
@@ -105,13 +102,13 @@ def get_concat_v(im1, im2, hm):
 
 
 def join_images(data_path, grid_path, mode, number_line, name, grid_size):
-    """_summary_
+    """Concatenate images horizontally or vertically.
 
     Args:
-        data_path (_type_): _description_
-        grid_path (_type_): _description_
-        mode (_type_): _description_
-        number_line (_type_): _description_
+        data_path (str): Spectra images path.
+        grid_path (str): Grid images path.
+        mode (str): Concatenation mode ('horizontal' or 'vertical').
+        number_line (_type_): 
         name (_type_): _description_
         grid_size (_type_): _description_
     """
@@ -120,7 +117,7 @@ def join_images(data_path, grid_path, mode, number_line, name, grid_size):
     foldername = 'Gif_images_' + mode
     if foldername not in foldcontents:
         os.makedirs(os.path.join(data_path, foldername))
-    Gif_image_path = os.path.join(data_path, foldername)
+    gif_image_path = os.path.join(data_path, foldername)
 
     ensemble_images = []
 
@@ -132,9 +129,9 @@ def join_images(data_path, grid_path, mode, number_line, name, grid_size):
 
     for g in range(number_line):
 
-        gridname = 'line{}.png'.format(g)
+        gridname = f'line{g}.png'
         dataname = name + \
-            '_from{}to{}.png'.format(g*grid_size[1], (g+1)*grid_size[1])
+            f'_from{g*grid_size[1]}to{(g+1)*grid_size[1]}.png'
 
         data = Image.open(os.path.join(data_path, dataname))
         grid = Image.open(os.path.join(grid_path, gridname))
@@ -149,7 +146,8 @@ def join_images(data_path, grid_path, mode, number_line, name, grid_size):
         if h > hm:
             hm = h
 
-    for i in range(len(data_all)):
+    for i, _ in enumerate(data_all):
+    #for i in range(len(data_all)):
 
         data = data_all[i]
         grid = grid_all[i]
@@ -166,7 +164,7 @@ def join_images(data_path, grid_path, mode, number_line, name, grid_size):
             image = image.resize((1076, 1398), Image.ANTIALIAS)
             print(image.size)
 
-        image.save(os.path.join(Gif_image_path, name + '_{}.png'.format(i)))
+        image.save(os.path.join(gif_image_path, name + f'_{i}.png'))
 
         ensemble_images.append(image)
 
@@ -174,9 +172,9 @@ def join_images(data_path, grid_path, mode, number_line, name, grid_size):
     gif_foldername = 'Gif_' + mode
     if gif_foldername not in foldcontents:
         os.makedirs(os.path.join(data_path, gif_foldername))
-    Gif_path = os.path.join(data_path, gif_foldername)
+    gif_path = os.path.join(data_path, gif_foldername)
 
-    Gifname = name + '_gif.gif'
+    gifname = name + '_gif.gif'
 
-    ensemble_images[0].save(os.path.join(Gif_path, Gifname), save_all=True,
+    ensemble_images[0].save(os.path.join(gif_path, gifname), save_all=True,
                             append_images=ensemble_images[1:], duration=1000, loop=0)

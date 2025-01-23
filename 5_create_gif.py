@@ -1,6 +1,8 @@
+"""Create grid. Concatenate the spectra and the grid."""
+
 import os
 import numpy as np
-from Images_functions import create_grid, get_concat_h, get_concat_v, join_images
+from images_functions import create_grid, join_images
 
 grid_size = [32,32]
 image_size = 500 # nm
@@ -18,8 +20,8 @@ if 'grid' not in foldcontents:
     os.makedirs(os.path.join(data_path,'grid'))
 saving_path = os.path.join(data_path,'grid')
 
-# # Creation of the grids
-# create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_path)
+# Creation of the grids
+create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_path)
 
 # Concatenate spectra and grids
 name = '060924-40-STLvsEn_waterfall'
