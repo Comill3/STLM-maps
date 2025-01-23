@@ -1,7 +1,9 @@
 # STLM-maps
 STLM acquisition data workflow
 
-Authors: Mylène Sauty & Camille Fornos
+Authors: Mylène Sauty
+
+Modifications: Camille Fornos
 
 How the data should be saved on the computer:
 .../STL_Data/XXXX-XX-XX Sample_name W UHV XX/STL_XX/...
