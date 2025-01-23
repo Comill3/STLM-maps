@@ -261,7 +261,7 @@ plt.show()
 # ax3.tick_params(axis='x', labelsize=14)
 # ax3.tick_params(axis='y', labelsize=14)
 
-# savename = os.path.join(savingpath, Gnumber + 'G_Hist_Gaussian1-phonon-replica.png')
+# savename = os.path.join(savingpath, G + 'G_Hist_Gaussian1-phonon-replica.png')
 # plt.savefig(savename, dpi = 300, bbox_inches='tight', format='png')
 # plt.show()
 
@@ -294,7 +294,7 @@ plt.show()
 # ax1.xaxis.set_label_coords(0.5,1.25)
 # ax1.yaxis.set_label_coords(1.18,0.5)
 
-# savename = os.path.join(savingpath, Gnumber + 'G_Coeff_map_B1divA1.png')
+# savename = os.path.join(savingpath, G + 'G_Coeff_map_B1divA1.png')
 # plt.savefig(savename, dpi = 300, bbox_inches='tight', format='png')
 # plt.show()
 
@@ -315,6 +315,6 @@ plt.show()
 # ax1.tick_params(axis='x', labelsize=14)
 # ax1.tick_params(axis='y', labelsize=14)
 
-# savename = os.path.join(savingpath, Gnumber + 'G_Hist_B1divA1.png')
+# savename = os.path.join(savingpath, G + 'G_Hist_B1divA1.png')
 # plt.savefig(savename, dpi = 300, bbox_inches='tight', format='png')
 # plt.show()
