@@ -1,4 +1,6 @@
-from PCA_functions import *
+"""Removes noise from the raw data using the Principal Componants Ananlysis method."""
+
+from PCA_functions import perform_PCA, project_on_PCA_basis
 
 datapath = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2024-09-03 #SG19 ALE W UHV LN/STL_37'
 n = 7

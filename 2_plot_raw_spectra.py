@@ -28,9 +28,9 @@ param_dict = {}
 for i in range(p): 
     param_dict[data_param[i, 0]] = (data_param[i, 1], data_param[i, 2], data_param[i, 3])
 
-# ### Plotting ###
-# plot_STL_in_grid(STL_to_plot, DATA_PATH2, param_dict, step_linescan,
-#                  grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth)
+### Plotting ###
+plot_stl_in_grid(STL_to_plot, DATA_PATH2, param_dict, step_linescan,
+                 grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth)
 
 plot_sum_spectra(STL_to_plot, DATA_PATH2, param_dict, missing_spectra,
                  perverted_spectra, Full, v_min, v_max, Smooth)

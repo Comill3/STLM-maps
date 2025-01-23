@@ -7,3 +7,6 @@ The spectrometer and the STM microscope communicate with triggers to acquire spe
 Identification of the missing spectra leads to the identification of the perverted spectra.
 
 ### 1_correct_and_save_spectra.py ###
+Allows the identification and removing of cosmic rays in the spectra using wavelets. The program neads utils_EA_0.py and the folder "filters" to operate.
+
+### 2_plot_raw_spectra.py ###
