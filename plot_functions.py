@@ -3,7 +3,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import savgol_filter, find_peaks, peak_widths
+from scipy.signal import savgol_filter
 
 
 def param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename):
