@@ -80,7 +80,8 @@ def remove_cosmic_rays_2(intensity, wavelength, PosRC, BGfix):
 
     Returns:
         tuple: A tuple containing:
-            - intensity_corrected (np.array): The corrected intensity array with cosmic rays removed.
+            - intensity_corrected (np.array): The corrected intensity 
+            array with cosmic rays removed.
             - n (int): The number of points that were corrected.
     """
     # PosRC, error = find_cosmic_rays_wavelets(Intensity)
