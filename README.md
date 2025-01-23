@@ -1,6 +1,8 @@
 # STLM-maps
 STLM acquisition data workflow
 
+Authors: Mylène Sauty & Camille Fornos
+
 How the data should be saved on the computer:
 .../STL_Data/XXXX-XX-XX Sample_name W UHV XX/STL_XX/...
 Date, sample name, composition of the tip, UHV conditions, temperature (LN(liquide nitrogen) or RT(room temperature))
@@ -25,5 +27,10 @@ Allow to plot the spectra with noise treatement. Additionnaly, a plot of the sum
 ### 5_create_gif.py ###
 Create a gif to superpose on STM effective topographies. Each horizontal line is plotted and have their corresponding spectra.
 
+### 6_fitting_data.py ###
+Use of a combination of Gaussian function to fit the raw data. The position, width and amplitude of the Gaussain gives information on the QWs composition. Better to use on samples with one or two main emission peaks.
+
+### 7_fits_maps.py ###
+With the fitting, Gaussian coefficients are obtained (Amplitude, FWHW, energy position). They can be plotted spatially on a 2D map. This can be then associated with the effective STM topographies.
 
 
