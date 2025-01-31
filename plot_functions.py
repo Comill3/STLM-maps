@@ -4,6 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import savgol_filter
+from scipy import integrate as intg
 
 
 def param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename):
@@ -679,3 +680,92 @@ def plot_sum_spectra_PCA(stl_to_plot, path, param_dict, missing_spectra, pervert
     plt.savefig(savename, dpi=300, bbox_inches='tight')
     
     plt.show()
+
+def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
+    """Integrate the STLM map spectra and save the result in a txt file.
+
+    Args:
+        DATA_PATH2 (str): data path.
+        PCA (bool): if True the PCA data are integrated.
+        n (int): number of eigen vectors.
+        Smooth (bool): if True, the data are smoothed before integration.
+        E1 (float): minimum energy for integration.
+        E2 (float): maximum energy for integration.
+    """
+
+    ## Use the PCA data
+    if PCA:
+        name_folder = '{}vecteurs_propres'.format(n)
+        basispath = os.path.join(DATA_PATH2, name_folder)
+        basisname = "{}vecteurs_propres.npy".format(n)
+        dataname = 'coeff_projection_from0to1024.npy'
+        # Saving path
+        foldcontents = os.listdir(basispath)
+        folder_name = 'Correlations'
+        if folder_name not in foldcontents:
+            os.makedirs(os.path.join(basispath, folder_name))
+        saving_path = os.path.join(basispath, folder_name)
+        
+        ##Get data projected on PCA basis
+        coeff = np.load(os.path.join(basispath, dataname))
+        vectors = np.load(os.path.join(basispath, basisname))
+        for i in range(np.shape(vectors)[0]):
+            vectors[i] = vectors[i] / max(vectors[i])
+        STL_data = np.matmul(coeff, vectors)
+
+        (m, l) = np.shape(STL_data)
+        print(m, l)
+
+        ## Get wavelength and energy
+        name_wl = 'Wavelength'
+        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
+        energy = 1240 / wavelength
+
+    ## Use the raw data
+    else:
+        ## Get already corrected data
+        name_data = 'Corrected_spectra'  # 'Interference_Corrected_spectra' #'Corrected_spectra'
+        name_wl = 'Wavelength'
+        STL_data = np.load(os.path.join(DATA_PATH2, name_data + '.npy'))
+        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
+        energy = 1240 / wavelength
+        # Saving path
+        foldcontents = os.listdir(DATA_PATH2)
+        folder_name = 'Correlations'
+        if folder_name not in foldcontents:
+            os.makedirs(os.path.join(DATA_PATH2, folder_name))
+        saving_path = os.path.join(DATA_PATH2, folder_name)
+
+        (m, l) = np.shape(STL_data)
+        print(m, l)
+
+        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
+        energy = 1240 / wavelength
+
+    #Bornes intégration
+    W1 = 1240 / E1
+    W2 = 1240 / E2
+    i1 = np.argmin(np.abs(wavelength - W1))
+    i2 = np.argmin(np.abs(wavelength - W2))
+    #    i1 = 0
+    #    i2 = -1
+
+    liste_spectra = np.arange(0, m, 1)
+    list_intg = []
+
+    for j in liste_spectra:
+
+        print(j)
+
+        spectrum = STL_data[j]
+
+        if Smooth:
+            spectrum = savgol_filter(spectrum, 5, 1)
+
+        totalInt = intg.trapz(spectrum[i1:i2], energy[i1:i2])   # counts.eV
+        list_intg.append(totalInt)
+
+    array_area = np.array(list_intg).reshape(32, 32)
+    array_area = np.flip(array_area, axis=1)
+
+    np.savetxt(os.path.join(saving_path, f'Intg_matrix_from_{round(1240/W1, 2)}_to_{round(1240/W2, 2)}eV.txt'), array_area, delimiter='\t')
