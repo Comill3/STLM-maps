@@ -2,10 +2,12 @@
 
 import os
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from plot_functions import *
 
+mpl.rcParams['font.family'] = 'Arial'
 
 def perform_PCA(datapath, n):
     """Will perfom PCA on the data with the first n eigen vectors
@@ -17,7 +19,7 @@ def perform_PCA(datapath, n):
 
     name_data = 'Selected_spectra_for_PCA' #y data
     name_wl = 'Wavelength' #x data
-        
+
     selected_spectra = np.load(os.path.join(datapath, name_data + '.npy'))
     print(np.shape(selected_spectra))
     wavelength = np.load(os.path.join(datapath, name_wl + '.npy'))
@@ -26,15 +28,13 @@ def perform_PCA(datapath, n):
     i1 = 0
     i2 = -1
 
-    # Specific if spectra (with room light typically) need to be removed
-    # #list_out = []
+    # # Specific if spectra (with room light typically) need to be removed
+    # list_out = list(range(850, 969))
 
-    # for i in range(len(selected_spectra)):
-    #     plt.plot(selected_spectra[i])
     # #     if np.max(selected_spectra[i]>10000): # in counts. To be sure this is not from the sample
     # #         list_out.append(i)
 
-    # # print(list_out)
+    # print(list_out)
 
     # plt.show()
 
@@ -64,8 +64,8 @@ def perform_PCA(datapath, n):
     ax.tick_params(axis='x', labelsize=16)
     ax.tick_params(axis='y', labelsize=16)
     #plt.ylim(1e-4, 1)
-    plt.xlabel('Vector number', fontsize=16)
-    plt.ylabel('Variance ratio', fontsize=16)
+    plt.xlabel('Vecteur #', fontsize=16)
+    plt.ylabel('Rapport de variance', fontsize=16)
     vr = 'PCA_variance_ratio'
     plt.savefig(os.path.join(datapath,vr), dpi = 300, bbox_inches='tight')
     plt.show()
@@ -92,6 +92,7 @@ def perform_PCA(datapath, n):
     plt.show()
 
     couleur = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 
+            'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan',
             'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan',
             'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan']
 
@@ -159,7 +160,7 @@ def project_on_PCA_basis(datapath, n, v_min, v_max):
         fig = plt.figure(figsize = [7, 5])
         ax = fig.add_subplot(111)
         
-        plt.plot(energy[i1:i2], PCABasis[i][i1:i2], color = couleur[i%10])
+        plt.plot(energy[i1:i2], PCABasis[i][i1:i2], color = couleur[i%1])
 
         plt.rcParams.update({'font.size': 8})
         ax.tick_params(axis='x', labelsize=12)
@@ -168,7 +169,7 @@ def project_on_PCA_basis(datapath, n, v_min, v_max):
         plt.ylabel(f'PCA eigenvector #{i}', fontsize=14)
 
         plt.savefig(os.path.join(savingpath, f'vecteur_propre_#{i}.png'), dpi = 300, bbox_inches='tight')
-        plt.show()
+
 
     start = 0
     stop = m
@@ -180,7 +181,7 @@ def project_on_PCA_basis(datapath, n, v_min, v_max):
 
         spectrum = stl_data[j]
 
-        if plot_spectra and j%100==0 :
+        if plot_spectra and j%10==0 :
             fig = plt.figure(figsize = [7, 5])
             ax = fig.add_subplot(111)
 
@@ -196,7 +197,7 @@ def project_on_PCA_basis(datapath, n, v_min, v_max):
             # if i == 2 or i==3 :
             #     a = 0
 
-            if plot_spectra and j%100==0 :
+            if plot_spectra and j%10==0 :
                 plt.plot(energy[i1:i2], a*vector[i1:i2], label = 'f{}'.format(i), color = couleur[i%10])
 
             fit += a*vector
@@ -205,7 +206,7 @@ def project_on_PCA_basis(datapath, n, v_min, v_max):
 
         coeff_proj.append(coeff)
 
-        if plot_spectra and j%50==0 :
+        if plot_spectra and j%10==0 :
             s = s[:-2]
             plt.plot(energy[i1:i2], spectrum[i1:i2], 'c', label = 'data')
             plt.plot(energy[i1:i2], fit[i1:i2], 'k', label = 'Projection')

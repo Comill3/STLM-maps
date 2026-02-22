@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/' \
-            '2024-09-03 #SG19 ALE W UHV LN/STL_16'
-DATA_NAME = "030924-16-STL-TriggerData.txt"  # File with all the triggers data
+            '2025-08-25 #SG19 ALE UHV W RT/STL_13'
+DATA_NAME = "280825-13-STL-TriggerData.txt"  # File with all the triggers data
 
 # View of the transposed array
 trigger_data = np.loadtxt(os.path.join(DATA_PATH, DATA_NAME), skiprows=1).T

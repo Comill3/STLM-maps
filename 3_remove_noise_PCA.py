@@ -3,8 +3,8 @@
 from PCA_functions import perform_PCA, project_on_PCA_basis
 
 datapath = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/' \
-            '2024-07-18 #SG19 ALE W UHV LN/STL_14'
-n = 10
+            '2025-08-25 #SG19 ALE UHV W RT/STL_13'
+n = 5
 v_min = 1.5
 v_max = 3.5
 

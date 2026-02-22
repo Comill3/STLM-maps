@@ -3,9 +3,12 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from PIL import Image
 
-def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_path):
+mpl.rcParams['font.family'] = 'Arial'
+
+def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_path, SVG):
     """Create 32 images of a grid with one line colored each time
 
     Args:
@@ -14,6 +17,7 @@ def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_pa
         step_linescan (float): step between 2 spectra in nm.
         missing_spectra (list): List of missing spectra.
         saving_path (str): Saving path.
+        SVG (bool): If True, save the images as SVG files, otherwise as PNG files.
     """
 
     for i in range(grid_size[0]):
@@ -46,8 +50,10 @@ def create_grid(grid_size, image_size, step_linescan, missing_spectra, saving_pa
             c = k % grid_size[1]
             plt.plot((c+0.5)*step_linescan, (l+0.5) *
                      step_linescan, '.w', markersize=4)
-
-        savename = os.path.join(saving_path, f'line{i}')
+        if SVG:
+            savename = os.path.join(saving_path, f'line{i}.svg')
+        else:
+            savename = os.path.join(saving_path, f'line{i}.png')
 
         plt.rcParams.update({'font.size': 8})
         ax.xaxis.tick_top()

@@ -35,4 +35,7 @@ Use of a combination of Gaussian function to fit the raw data. The position, wid
 ### 7_fits_maps.py ###
 With the fitting, Gaussian coefficients are obtained (Amplitude, FWHW, energy position). They can be plotted spatially on a 2D map. This can be then associated with the effective STM topographies.
 
+### 8_integrate_intensity.py ###
+Integrate the PCA or raw data after the removing of cosmic rays. Then creates map with the corresponding histogram. Takes into account the missing spectra.
+
 
