@@ -5,31 +5,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.gridspec as gridspec
+import matplotlib as mpl
 from plot_functions import integrate_data
 
-DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2024-09-03 #SG19 ALE W UHV LN'
-DEDICATED_FOLDER = 'STL_16'
+# mpl.rcParams['font.family'] = 'Arial'
+
+DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2023-06-19 #SG19 ref(1) W UHV RT'
+DEDICATED_FOLDER = 'STL_35'
 DATA_PATH2 = os.path.join(DATA_PATH, DEDICATED_FOLDER)
 
-PCA = False
+PCA = True
 Smooth = False
-n = 7 #number of eigen vectors
+n = 13 #number of eigen vectors
 
 # Intg limits
-E1 = 1.5 #eV
-E2 = 3.5 #eV
+E1 = 3.01 #eV
+E2 = 3.51 #eV
 
 # Acquisition parameters #
-image_size = [1000, 1000]
+image_size = [2000, 2000]
 grid_size = [32, 32]
-missing_spectra = []
+missing_spectra = [55, 260, 412, 429, 612]
 perverted_spectra = [i + 1 for i in missing_spectra]
 
-### Integrate data and save it in a text file ###
-integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2)
+# ## Integrate data and save it in a text file ###
+integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, grid_size[0], grid_size[1])
 
 ### Plot and save the corresponding map ###
-Ech_log = False
+Ech_log = True
 start = 0
 stop = 1024
 
@@ -61,9 +64,9 @@ for i in perverted_spectra:
 
 I = np.reshape(np.copy(fit_param_modif), grid_size)
 I = np.flip(np.abs(I), axis=1)
-I[I<1] = 0
-L_I = np.log(I)
-L_I[I==0]=0
+
+if Ech_log:
+    I[I<1] = 1
 
 fig = plt.figure()
 spec = gridspec.GridSpec(ncols=1, nrows=1)
@@ -71,7 +74,7 @@ cmap1 = cm.get_cmap(name='viridis', lut=None)
 
 ax1 = fig.add_subplot(spec[0])
 if Ech_log:
-    plt.imshow(L_I, cmap=cmap1, extent=[image_size[1], 0, image_size[0], 0], interpolation='none')
+    plt.imshow(np.log10(I), cmap=cmap1, extent=[image_size[1], 0, image_size[0], 0], interpolation='none')
     clb = plt.colorbar(pad=0.2)
     clb.set_label('log10(Integrated intensity)', labelpad=20, y=0.5, rotation=270, fontsize=16)
 
@@ -100,21 +103,15 @@ plt.savefig(savename, dpi=300, bbox_inches='tight', format='png')
 plt.show()
 
 ### Histogram ###
-if Ech_log:
-    I_h = np.copy(L_I)
-else:
-    I_h = np.copy(I)
-
+I_h = np.copy(I)
 I_h = I_h.flatten()
 
 fig = plt.figure()
 
 plt.hist(I_h, bins=100)
 plt.ylabel('Histogram', fontsize=16)
-if Ech_log:
-    plt.xlabel('log10(I) (arb. units)', fontsize=16)
-else:
-    plt.xlabel('I (arb. units)', fontsize=16)
+
+plt.xlabel('I (arb. units)', fontsize=16)
 
 plt.tick_params(axis='x', labelsize=14)
 plt.tick_params(axis='y', labelsize=14)

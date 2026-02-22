@@ -2,10 +2,12 @@
 
 import os
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 from scipy.signal import savgol_filter
 from scipy import integrate as intg
 
+# mpl.rcParams['font.family'] = 'Arial'
 
 def param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename):
     """Plots a 2D plot with specified labels and saves the figure.
@@ -53,9 +55,9 @@ def param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, saven
     ax.set_xlabel(xlabel, fontsize=12)
 
     # Change the backgroung color
-    ax.xaxis.set_pane_color((0.5, 0.5, 0.5, 1.0))
-    ax.yaxis.set_pane_color((0.5, 0.5, 0.5, 1.0))
-    ax.zaxis.set_pane_color((0.5, 0.5, 0.5, 1.0))
+    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+    ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
 
     # Additional text on the spectra
     # Place text on a fixed position on the ax object
@@ -71,7 +73,7 @@ def param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, saven
     ax.tick_params(axis='z', labelsize=10)
     plt.savefig(savename, dpi=300, bbox_inches='tight')
 
-def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth):
+def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth, SVG):
     """Plots STL spectra in a grid of specified size, with options for smoothing, 
     handling missing and perverted spectra, and plotting in both 2D and 3D.
     
@@ -87,6 +89,7 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
         v_min (float): Minimum value for wavelength or energy range.
         v_max (float): Maximum value for wavelength or energy range.
         Smooth (bool): Whether to apply smoothing to the spectra.
+        SVG (bool): If True, save figs in .svg format, else save in .png format
     """
 
     date = stl_to_plot[:6]
@@ -245,8 +248,13 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
         ax = ax5
         xlabel = 'Energy (eV)'
         ylabel = 'Intensity (arb. units)'
-        savename = os.path.join(savepath, stl_to_plot.rstrip(
-            '.txt') + f'vsEn_2D_from{num1}to{num2}')
+
+        if SVG:
+            savename = os.path.join(savepath, stl_to_plot.rstrip(
+                '.txt') + f'vsEn_2D_from{num1}to{num2}.svg')
+        else:
+            savename = os.path.join(savepath, stl_to_plot.rstrip(
+                '.txt') + f'vsEn_2D_from{num1}to{num2}')
 
         param_plot_2d(i, ax, xlabel, ylabel, s, date,
                       spectrum_number, savename)
@@ -281,7 +289,7 @@ def plot_one_spectrum(X, Y, couleur, xlabel, ylabel, s, s0, savename, ax):
     plt.savefig(savename, dpi = 300, bbox_inches='tight')
     plt.show()
 
-def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth):
+def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth, SVG):
     """Plots STL spectra in a grid using PCA basis.
         
     Args:
@@ -296,6 +304,7 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
         v_min (float): Minimum value for the wavelength range.
         v_max (float): Maximum value for the wavelength range.
         Smooth (bool): Whether to apply smoothing to the spectra.
+        SVG (bool): If True, save figs in .svg format, else save in .png format
     """
 
     [datapath2, basispath, basisname, dataname] = path
@@ -442,8 +451,13 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
         xlabel = 'Energy (eV)'
         ylabel = 'Position (nm)'
         zlabel = 'Intensity (arb. units)'
-        savename = os.path.join(savepath, stl_to_plot.rstrip(
-            '.txt') + f'vsEn_waterfall_from{num1}to{num2}')
+        if SVG:
+            savename = os.path.join(savepath, stl_to_plot.rstrip(
+                '.txt') + f'vsEn_waterfall_from{num1}to{num2}.svg')
+        else:
+            savename = os.path.join(savepath, stl_to_plot.rstrip(
+                '.txt') + f'vsEn_waterfall_from{num1}to{num2}')
+
 
         param_plot_3d(i, ax, xlabel, ylabel, zlabel, s,
                       date, spectrum_number, savename)
@@ -462,8 +476,12 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
         ax = ax5
         xlabel = 'Energy (eV)'
         ylabel = 'Intensity (arb. units)'
-        savename = os.path.join(savepath, stl_to_plot.rstrip(
-            '.txt') + f'vsEn_2D_from{num1}to{num2}')
+        if SVG:
+            savename = os.path.join(savepath, stl_to_plot.rstrip(
+                '.txt') + f'vsEn_2D_from{num1}to{num2}.svg')
+        else:
+            savename = os.path.join(savepath, stl_to_plot.rstrip(
+                '.txt') + f'vsEn_2D_from{num1}to{num2}')
 
         param_plot_2d(i, ax, xlabel, ylabel, s, date,
                       spectrum_number, savename)
@@ -681,7 +699,7 @@ def plot_sum_spectra_PCA(stl_to_plot, path, param_dict, missing_spectra, pervert
     
     plt.show()
 
-def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
+def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
     """Integrate the STLM map spectra and save the result in a txt file.
 
     Args:
@@ -691,6 +709,8 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
         Smooth (bool): if True, the data are smoothed before integration.
         E1 (float): minimum energy for integration.
         E2 (float): maximum energy for integration.
+        m (int): number of lines.
+        l (int): number of columns.
     """
 
     ## Use the PCA data
@@ -713,8 +733,8 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
             vectors[i] = vectors[i] / max(vectors[i])
         STL_data = np.matmul(coeff, vectors)
 
-        (m, l) = np.shape(STL_data)
-        print(m, l)
+        # (m, l) = np.shape(STL_data)
+        # print(m, l)
 
         ## Get wavelength and energy
         name_wl = 'Wavelength'
@@ -736,8 +756,8 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
             os.makedirs(os.path.join(DATA_PATH2, folder_name))
         saving_path = os.path.join(DATA_PATH2, folder_name)
 
-        (m, l) = np.shape(STL_data)
-        print(m, l)
+        # (m, l) = np.shape(STL_data)
+        # print(m, l)
 
         wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
         energy = 1240 / wavelength
@@ -750,7 +770,7 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
     #    i1 = 0
     #    i2 = -1
 
-    liste_spectra = np.arange(0, m, 1)
+    liste_spectra = np.arange(0, m*l, 1)
     list_intg = []
 
     for j in liste_spectra:
@@ -762,10 +782,10 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2):
         if Smooth:
             spectrum = savgol_filter(spectrum, 5, 1)
 
-        totalInt = intg.trapz(spectrum[i1:i2], energy[i1:i2])   # counts.eV
+        totalInt = intg.trapz(spectrum[i1:i2], energy[i1:i2])
         list_intg.append(totalInt)
 
-    array_area = np.array(list_intg).reshape(32, 32)
+    array_area = np.array(list_intg).reshape(m, l)
     array_area = np.flip(array_area, axis=1)
 
     np.savetxt(os.path.join(saving_path, f'Intg_matrix_from_{round(1240/W1, 2)}_to_{round(1240/W2, 2)}eV.txt'), array_area, delimiter='\t')
