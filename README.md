@@ -36,4 +36,15 @@ With the fitting, Gaussian coefficients are obtained (Amplitude, FWHW, energy po
 ### 8_integrate_intensity.py ###
 Integrate the PCA or raw data after the removing of cosmic rays. Then creates map with the corresponding histogram. Takes into account the missing spectra.
 
+These next .py files are optionnal and are used in specific cases.
+
+### 9_max_pos.py ###
+Find the position in energy of the maximum intensity point.
+
+### 10_local_maxima.py ###
+Find the local maxima of each spectra.
+
+### 11_local_maxima_map.py ###
+Plot different maps from the results obtained with '10_local_maxima.py' code.
+
 
