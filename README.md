@@ -18,10 +18,10 @@ The spectrometer and the STM microscope communicate with triggers to acquire spe
 
 Identification of the missing spectra leads to the identification of the perverted spectra.
 
-You should then use 
+You can then use the next python scripts.
 
 ### 1_correct_and_save_spectra.py ###
-Allows the identification and removing of cosmic rays in the spectra using wavelets. The program needs utils_EA_0.py, Clean_EA.py and the filters in the "filters" folders to operate.
+Allows the identification and removing of cosmic rays in the spectra using wavelets. The program needs utils_EA_0.py, Clean_EA.py and the filters in the "filters" folders to operate. Gives the files "Corrected_spectra.npy", "Selected_spectra_for_PCA.npy" and "Wavelength.npy" that are needed for the rest of the python scripts.
 
 ### 2_plot_raw_spectra.py ###
 Allow to plot the spectra without any noise treatement. Additionnaly, a plot of the summed spectra with its FWHM can be plotted.
