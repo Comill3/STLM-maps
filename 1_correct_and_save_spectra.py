@@ -12,11 +12,10 @@ import numpy as np
 from scipy.interpolate import interp1d
 from utils_EA_0 import LoadWavelet1D, CleanLine
 
-DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/' \
-            '2025-08-25 #SG19 ALE UHV W RT'
-DEDICATED_FOLDER = 'STL_13'
+DATA_PATH = 'Demo_Data'
+DEDICATED_FOLDER = 'STL_8'
 DATA_PATH_2 = os.path.join(DATA_PATH, DEDICATED_FOLDER)
-DATA_NAME = "280825-13-STL.txt"
+DATA_NAME = "280825-8-STL.txt"
 
 
 def find_cosmic_rays_wavelets(data_line):

@@ -3,17 +3,25 @@ STLM acquisition data workflow
 
 Authors: Mylène Sauty, Camille Fornos
 
-How the data should be saved on the computer:
+### Step 0: ###
+Unzip the "filters.7z" folder to be able to use "1_correct_and_save_spectra.py"
+
+### Step 1: ###
+Save the data on the computer like so:
 .../STL_Data/XXXX-XX-XX Sample_name W UHV XX/STL_XX/...
 Date, sample name, composition of the tip, UHV conditions, temperature (LN(liquide nitrogen) or RT(room temperature))
 
+### Next steps: ###
+
 ### 0_analyse_trigger.py ###
-The spectrometer and the STM microscope communicate with triggers to acquire spectra. There is miscommunication between them leading to spectra not being acquired. They are called "missing spectra". Because the spectrometer didn't receive the trigger to stop the acquisition, the next spectrum will be "perverted" and be the result of averaging 2 pixels.
+The spectrometer and the STM microscope communicate with triggers to acquire spectra. There can be miscommunication between them leading to spectra not being acquired. They are called "missing spectra". Because the spectrometer didn't receive the trigger to stop the acquisition, the next spectrum will be "perverted" and be the result of averaging 2 pixels.
 
 Identification of the missing spectra leads to the identification of the perverted spectra.
 
+You should then use 
+
 ### 1_correct_and_save_spectra.py ###
-Allows the identification and removing of cosmic rays in the spectra using wavelets. The program needs utils_EA_0.py, Clean_EA.py and the folder "filters" to operate.
+Allows the identification and removing of cosmic rays in the spectra using wavelets. The program needs utils_EA_0.py, Clean_EA.py and the filters in the "filters" folders to operate.
 
 ### 2_plot_raw_spectra.py ###
 Allow to plot the spectra without any noise treatement. Additionnaly, a plot of the summed spectra with its FWHM can be plotted.

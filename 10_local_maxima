@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks, savgol_filter
 from fit_functions import get_data_for_fit
 
-DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2023-06-19 #SG19 ref(1) W UHV RT/STL_35'
+DATA_PATH = 'Demo_Data/STL_8'
 PCA = True
-n = 13
+n = 7
 
 stl_data, stl_data_init, wavelength, energy, savepath, m, l = get_data_for_fit(PCA, DATA_PATH, n)
 

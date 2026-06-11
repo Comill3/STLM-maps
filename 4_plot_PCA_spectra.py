@@ -4,15 +4,15 @@ import os
 import numpy as np
 from plot_functions import plot_stl_in_grid_PCA, plot_sum_spectra_PCA
 
-datapath = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2023-06-19 #SG19 ref(1) W UHV RT'
+datapath = 'Demo_Data'
 
-n = 13  # Number of eigen vectors
+n = 7  # Number of eigen vectors
 m = 1024  # Number of spectra
 
 # Plot STL spectra in a grid, with one file in one dedicated folder
-dedicated_folder = 'STL_35'
+dedicated_folder = 'STL_8'
 datapath2 = os.path.join(datapath, dedicated_folder)
-stl_to_plot = "190623-35-STL.txt"
+stl_to_plot = "250825-8-STL.txt"
 
 Smooth = False
 
@@ -27,9 +27,9 @@ dataname = f'coeff_projection_from0to{m}.npy'
 
 path = [datapath2, basispath, basisname, dataname]
 
-step_linescan = 2000/32  # in nm #for STL measurements
+step_linescan = 1000/32  # in nm #for STL measurements
 grid_size = 32  # grid
-missing_spectra = [55, 260, 412, 429, 612]
+missing_spectra = []
 perverted_spectra = [i+1 for i in missing_spectra]
 
 # Dictionnary

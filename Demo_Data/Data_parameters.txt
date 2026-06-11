@@ -1,0 +1,6 @@
+#Spectrum number	Bias (V)	Tunneling current(nA)	Polarization bias (V)
+3	-4.5	-0.5	0
+4	-4.5	-0.5	0
+9	-7	-1	0
+8	-6.5	-0.5	0
+9	-7	-1	0

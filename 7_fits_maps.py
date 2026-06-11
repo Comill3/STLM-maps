@@ -8,7 +8,7 @@ from matplotlib import gridspec
 import matplotlib.cm as cm
 from fit_functions import get_gaussian_coeff
 
-datapath = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2025-08-25 #SG19 ALE UHV W RT/STL_13'
+datapath = 'Demo_Data/STL_8'
 
 PCA = True
 Log = True
@@ -32,7 +32,7 @@ if foldername not in foldcontents:
 savingpath = os.path.join(basispath,foldername)
     
 # Plot in grid
-image_size = [500, 500] # [nm, nm]
+image_size = [1000, 1000] # [nm, nm]
 grid_size = [32, 32] #32 #grid 
 step_linescan = image_size[0]/grid_size[0] #in nm #for STL measurements
 missing_spectra = []

@@ -2,14 +2,17 @@
 
 from PCA_functions import perform_PCA, project_on_PCA_basis
 
-datapath = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/' \
-            '2025-08-25 #SG19 ALE UHV W RT/STL_13'
-n = 5
+datapath = 'Demo_Data/STL_8'
+n = 7 #number of eigen vectors
 v_min = 1.5
 v_max = 3.5
 
-# # Find the number of eigen vectors
-# perform_PCA(datapath, n)
+### Uncomment first until the right number of eigne vector is found ###
 
-# Projection of the data in the basis
-project_on_PCA_basis(datapath, n, v_min, v_max)
+# Find the number of eigen vectors
+perform_PCA(datapath, n)
+
+### Uncomment second ###
+
+# # Projection of the data in the basis
+# project_on_PCA_basis(datapath, n, v_min, v_max)

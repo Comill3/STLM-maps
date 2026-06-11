@@ -5,9 +5,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/' \
-            '2025-08-25 #SG19 ALE UHV W RT/STL_13'
-DATA_NAME = "280825-13-STL-TriggerData.txt"  # File with all the triggers data
+DATA_PATH = 'Demo_Data/STL_8'
+DATA_NAME = '280825-8-STL-TriggerData.txt'  # File with all the triggers data
 
 # View of the transposed array
 trigger_data = np.loadtxt(os.path.join(DATA_PATH, DATA_NAME), skiprows=1).T
@@ -81,4 +80,8 @@ print(len(m))
 
 # m is the list of missing and perverted spectra
 print(m)
+
+if m.size == 0:
+    print("No missing spectra")
+
 np.savetxt(os.path.join(DATA_PATH, DATA_NAME[0:-4] + '_missing_spectra.txt'), m)

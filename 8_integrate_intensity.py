@@ -10,22 +10,22 @@ from plot_functions import integrate_data
 
 # mpl.rcParams['font.family'] = 'Arial'
 
-DATA_PATH = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2023-06-19 #SG19 ref(1) W UHV RT'
-DEDICATED_FOLDER = 'STL_35'
+DATA_PATH = 'Demo_Data'
+DEDICATED_FOLDER = 'STL_8'
 DATA_PATH2 = os.path.join(DATA_PATH, DEDICATED_FOLDER)
 
 PCA = True
 Smooth = False
-n = 13 #number of eigen vectors
+n = 7 #number of eigen vectors
 
 # Intg limits
 E1 = 3.01 #eV
 E2 = 3.51 #eV
 
 # Acquisition parameters #
-image_size = [2000, 2000]
+image_size = [1000, 1000]
 grid_size = [32, 32]
-missing_spectra = [55, 260, 412, 429, 612]
+missing_spectra = [0]
 perverted_spectra = [i + 1 for i in missing_spectra]
 
 # ## Integrate data and save it in a text file ###

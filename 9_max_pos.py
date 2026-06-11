@@ -8,10 +8,10 @@ from scipy.signal import savgol_filter
 import matplotlib.cm as cm
 from fit_functions import get_data_for_max
 
-datapath = 'C:/Users/cfo/Documents/Data_Analysis/STL_Acquisition/STL_Data/2023-06-19 #SG19 ref(1) W UHV RT/STL_35'
+datapath = 'Demo_Data/STL_8'
 
 PCA = True
-n = 13
+n = 7
 start = 0
 stop = 1024
 
