@@ -1,12 +1,12 @@
-""" Identification of the missing spectra in the STLM acquisition.
-"""
+"""Identification of the missing spectra in the STLM acquisition."""
 
 import os
-import numpy as np
-import matplotlib.pyplot as plt
 
-DATA_PATH = 'Demo_Data/STL_8'
-DATA_NAME = '280825-8-STL-TriggerData.txt'  # File with all the triggers data
+import matplotlib.pyplot as plt
+import numpy as np
+
+DATA_PATH = "Demo_Data/STL_8"
+DATA_NAME = "280825-8-STL-TriggerData.txt"  # File with all the triggers data
 
 # View of the transposed array
 trigger_data = np.loadtxt(os.path.join(DATA_PATH, DATA_NAME), skiprows=1).T
@@ -18,15 +18,15 @@ SpectoSTM = trigger_data[2]
 LL = 700  # width ot x axis
 TR = 220
 
-for k in range(int(max(time)//LL) + 1):
+for k in range(int(max(time) // LL) + 1):
     # STM to spec TRiggers
-    plt.plot(time, STMtoSpec, 'b')
-    plt.xlim(LL*k, LL*(k+1))
+    plt.plot(time, STMtoSpec, "b")
+    plt.xlim(LL * k, LL * (k + 1))
     plt.show()
 
     # spec to STM triggers
-    plt.plot(time, SpectoSTM, 'r')
-    plt.xlim(LL*k, LL*(k+1))
+    plt.plot(time, SpectoSTM, "r")
+    plt.xlim(LL * k, LL * (k + 1))
     plt.show()
 
 trigSTM = []
@@ -57,7 +57,7 @@ plt.plot(trigSTM)
 plt.plot(trigSpectro)
 plt.show()
 
-diff = [trigSTM[i+1] - trigSTM[i] for i in range(len(trigSTM) - 1)]
+diff = [trigSTM[i + 1] - trigSTM[i] for i in range(len(trigSTM) - 1)]
 plt.plot(diff)
 plt.ylim(0, 400)
 plt.xlim(-50, 1050)
@@ -84,4 +84,4 @@ print(m)
 if m.size == 0:
     print("No missing spectra")
 
-np.savetxt(os.path.join(DATA_PATH, DATA_NAME[0:-4] + '_missing_spectra.txt'), m)
+np.savetxt(os.path.join(DATA_PATH, DATA_NAME[0:-4] + "_missing_spectra.txt"), m)

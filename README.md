@@ -56,3 +56,48 @@ Find the local maxima of each spectra.
 Plot different maps from the results obtained with '10_local_maxima.py' code.
 
 
+
+
+## Installation and developpent workflow
+
+### Install the environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows : .venv\Scripts\activate
+pip install .
+```
+---
+
+### Linting code with Ruff
+
+Ruff is a very fast python linter and formatter : https://docs.astral.sh/ruff/
+
+```bash
+pip install ruff
+
+# Check all project files
+ruff check .
+
+# Automatically fix detected problems
+ruff check --fix .
+```
+
+
+---
+### Format code with Ruff
+
+
+```bash
+# Run formatter without changing files
+ruff format --check .
+
+# Apply formatting
+ruff format .
+```
+
+Or using uv (https://docs.astral.sh/uv/) :
+```bash
+uv sync --group dev
+uv run ruff check --fix . && uv run ruff format .
+```

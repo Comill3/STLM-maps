@@ -1,13 +1,14 @@
 """Plot function."""
 
 import os
+
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import numpy as np
-from scipy.signal import savgol_filter
 from scipy import integrate as intg
+from scipy.signal import savgol_filter
 
 # mpl.rcParams['font.family'] = 'Arial'
+
 
 def param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename):
     """Plots a 2D plot with specified labels and saves the figure.
@@ -25,15 +26,24 @@ def param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename):
 
     plt.figure(i)
 
-    plt.text(0.75, 1.07, s, ha='center', va='center',
-             transform=ax.transAxes, fontsize=12)
-    plt.text(0.10, 1.07, str(date) + ' #' + str(spectrum_number),
-             ha='center', va='center', transform=ax.transAxes, fontsize=12)
-    ax.tick_params(axis='x', labelsize=16)
-    ax.tick_params(axis='y', labelsize=16)
+    plt.text(
+        0.75, 1.07, s, ha="center", va="center", transform=ax.transAxes, fontsize=12
+    )
+    plt.text(
+        0.10,
+        1.07,
+        str(date) + " #" + str(spectrum_number),
+        ha="center",
+        va="center",
+        transform=ax.transAxes,
+        fontsize=12,
+    )
+    ax.tick_params(axis="x", labelsize=16)
+    ax.tick_params(axis="y", labelsize=16)
     plt.xlabel(xlabel, fontsize=16)
     plt.ylabel(ylabel, fontsize=16)
-    plt.savefig(savename, dpi=300, bbox_inches='tight')
+    plt.savefig(savename, dpi=300, bbox_inches="tight")
+
 
 def param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, savename):
     """Plots a 3D plot with specified labels and saves the figure.
@@ -62,21 +72,40 @@ def param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, saven
     # Additional text on the spectra
     # Place text on a fixed position on the ax object
     ax.text2D(0.4, 0.95, s, transform=ax.transAxes, fontsize=10)
-    ax.text2D(0.15, 0.95, str(date) + ' #' + str(spectrum_number),
-              transform=ax.transAxes, fontsize=10)
+    ax.text2D(
+        0.15,
+        0.95,
+        str(date) + " #" + str(spectrum_number),
+        transform=ax.transAxes,
+        fontsize=10,
+    )
 
-    plt.rcParams.update({'font.size': 8}) # Set the font size of the text
+    plt.rcParams.update({"font.size": 8})  # Set the font size of the text
     # Set the elevation and azimuth of the axes in degrees (not radians)
     ax.view_init(35, -80)
-    ax.tick_params(axis='x', labelsize=10)
-    ax.tick_params(axis='y', labelsize=10)
-    ax.tick_params(axis='z', labelsize=10)
-    plt.savefig(savename, dpi=300, bbox_inches='tight')
+    ax.tick_params(axis="x", labelsize=10)
+    ax.tick_params(axis="y", labelsize=10)
+    ax.tick_params(axis="z", labelsize=10)
+    plt.savefig(savename, dpi=300, bbox_inches="tight")
 
-def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth, SVG):
-    """Plots STL spectra in a grid of specified size, with options for smoothing, 
+
+def plot_stl_in_grid(
+    stl_to_plot,
+    datapath2,
+    param_dict,
+    step_linescan,
+    grid_size,
+    missing_spectra,
+    perverted_spectra,
+    Full,
+    v_min,
+    v_max,
+    Smooth,
+    SVG,
+):
+    """Plots STL spectra in a grid of specified size, with options for smoothing,
     handling missing and perverted spectra, and plotting in both 2D and 3D.
-    
+
     Args:
         stl_to_plot (str): The name of the STL file to plot.
         datapath2 (str): The path to the directory containing the data files.
@@ -96,36 +125,38 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
     spectrum_number = int(stl_to_plot[7:-8])
     print(spectrum_number)
 
-    with open(os.path.join(datapath2, stl_to_plot), 'r', encoding='utf-8') as entete:
+    with open(os.path.join(datapath2, stl_to_plot), encoding="utf-8") as entete:
         int_time = int(entete.readlines()[5].split()[17][:-1])
-    
+
     # entete = open(os.path.join(datapath2, stl_to_plot), 'r')
     # int_time = int(entete.readlines()[5].split()[17][:-1])
 
     # Load data with cosmic rays already removed
-    name_data = 'Corrected_spectra' #'Corrected_spectra' #'Interference_Corrected_spectra'
-    name_wl = 'Wavelength'
+    name_data = (
+        "Corrected_spectra"  #'Corrected_spectra' #'Interference_Corrected_spectra'
+    )
+    name_wl = "Wavelength"
 
-    stl_data = np.load(os.path.join(datapath2, name_data + '.npy'))
-    wavelength = np.load(os.path.join(datapath2, name_wl + '.npy'))
+    stl_data = np.load(os.path.join(datapath2, name_data + ".npy"))
+    wavelength = np.load(os.path.join(datapath2, name_wl + ".npy"))
     (m, l) = np.shape(stl_data)
 
     # Add lines of zeros for missing spectra
     l2 = len(missing_spectra)
-    spectra_modif = stl_data[0:m-l2]
+    spectra_modif = stl_data[0 : m - l2]
     zeroline = np.zeros(l)
     for i in missing_spectra:
-        if i > m-l2-1:
+        if i > m - l2 - 1:
             spectra_modif = np.append(spectra_modif, [zeroline], axis=0)
         else:
             spectra_modif = np.insert(spectra_modif, i, zeroline, axis=0)
 
     # Reshape plots
     if not Full:
-        W1 = 1240/v_min
-        W2 = 1240/v_max
-        i1 = np.argmin(np.abs(wavelength-W1))
-        i2 = np.argmin(np.abs(wavelength-W2))
+        W1 = 1240 / v_min
+        W2 = 1240 / v_max
+        i1 = np.argmin(np.abs(wavelength - W1))
+        i2 = np.argmin(np.abs(wavelength - W2))
 
     else:
         i1 = 0
@@ -134,20 +165,19 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
     # Plot STL spectra in grid of size: grid_size[0]*grid_size[1]
 
     for g in range(grid_size):
+        num1 = g * grid_size
+        num2 = (g + 1) * grid_size
 
-        num1 = g*grid_size
-        num2 = (g+1)*grid_size
-
-        energy = 1240/wavelength
+        energy = 1240 / wavelength
         spectra = spectra_modif[num1:num2]
 
-    # Plot the data: create the 4 figures for plot
+        # Plot the data: create the 4 figures for plot
 
         fig2 = plt.figure(2, figsize=[9, 6])
-        ax2 = fig2.add_subplot(111, projection='3d')
+        ax2 = fig2.add_subplot(111, projection="3d")
 
         fig3 = plt.figure(3, figsize=[9, 6])
-        ax3 = fig3.add_subplot(111, projection='3d')
+        ax3 = fig3.add_subplot(111, projection="3d")
 
         fig4 = plt.figure(4, figsize=[7, 5])
         ax4 = fig4.add_subplot(111)
@@ -155,14 +185,13 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
         fig5 = plt.figure(5, figsize=[7, 5])
         ax5 = fig5.add_subplot(111)
 
-        for k in range(num2-1, num1-1, -1):
-
+        for k in range(num2 - 1, num1 - 1, -1):
             # remove perverted spectra and lines of zeros added at missing spectra places
             if k in missing_spectra or k in perverted_spectra:
                 continue
 
             j = k - num1
-            couleur = j/(num2-num1)
+            couleur = j / (num2 - num1)
             # cmap = plt.cm.jet
             cmap = plt.cm.rainbow
 
@@ -172,41 +201,65 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
             if Smooth:
                 intj = savgol_filter(intj, 5, 1)
 
-        # Create third direction for 3D graph
+            # Create third direction for 3D graph
             Y = np.empty(len(intj))
-            Y.fill((j+0.5)*step_linescan)
+            Y.fill((j + 0.5) * step_linescan)
 
             # Corrected data vs wl 3D
             plt.figure(2)
-            plt.plot(wavelength[i1:i2], Y[i1:i2], intj[i1:i2],
-                     '-', color=cmap(couleur), linewidth=0.7)
+            plt.plot(
+                wavelength[i1:i2],
+                Y[i1:i2],
+                intj[i1:i2],
+                "-",
+                color=cmap(couleur),
+                linewidth=0.7,
+            )
 
             # Corrected data vs En 3D
             plt.figure(3)
-            plt.plot(energy[i1:i2], Y[i1:i2], intj[i1:i2],
-                     '-', color=cmap(couleur), linewidth=0.7)
+            plt.plot(
+                energy[i1:i2],
+                Y[i1:i2],
+                intj[i1:i2],
+                "-",
+                color=cmap(couleur),
+                linewidth=0.7,
+            )
 
             # Corrected data vs wl 2D
             plt.figure(4)
-            plt.plot(wavelength[i1:i2], intj[i1:i2], '-',
-                     color=cmap(couleur), linewidth=1, label='#{}'.format(Y[0]))
+            plt.plot(
+                wavelength[i1:i2],
+                intj[i1:i2],
+                "-",
+                color=cmap(couleur),
+                linewidth=1,
+                label=f"#{Y[0]}",
+            )
 
             # Corrected data vs En 2D
             plt.figure(5)
-            plt.plot(energy[i1:i2], intj[i1:i2], '-',
-                     color=cmap(couleur), linewidth=1, label='#{}'.format(Y[0]))
+            plt.plot(
+                energy[i1:i2],
+                intj[i1:i2],
+                "-",
+                color=cmap(couleur),
+                linewidth=1,
+                label=f"#{Y[0]}",
+            )
 
         # Plotting parameters for graphs and saving
         if spectrum_number in param_dict:
-            s = f'line{g} ; {param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms'
+            s = f"line{g} ; {param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms"
         else:
-            s = f'{int_time}ms'
+            s = f"{int_time}ms"
 
         # Folder name for saving plots
         foldcontents = os.listdir(datapath2)
-        foldername = 'Plot_spectra'
+        foldername = "Plot_spectra"
         if Smooth:
-            foldername += '_Smooth'
+            foldername += "_Smooth"
 
         if foldername not in foldcontents:
             os.makedirs(os.path.join(datapath2, foldername))
@@ -214,56 +267,58 @@ def plot_stl_in_grid(stl_to_plot, datapath2, param_dict, step_linescan, grid_siz
 
         i = 2
         ax = ax2
-        xlabel = 'Wavelength (nm)'
-        ylabel = 'Position (nm)'
-        zlabel = 'Intensity (arb. units)'
-        savename = os.path.join(savepath, stl_to_plot.rstrip(
-            '.txt') + f'vsWl_waterfall_from{num1}to{num2}')
+        xlabel = "Wavelength (nm)"
+        ylabel = "Position (nm)"
+        zlabel = "Intensity (arb. units)"
+        savename = os.path.join(
+            savepath, stl_to_plot.rstrip(".txt") + f"vsWl_waterfall_from{num1}to{num2}"
+        )
 
-        param_plot_3d(i, ax, xlabel, ylabel, zlabel, s,
-                      date, spectrum_number, savename)
+        param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, savename)
 
         i = 3
         ax = ax3
-        xlabel = 'Energy (eV)'
-        ylabel = 'Position (nm)'
-        zlabel = 'Intensity (arb. units)'
-        savename = os.path.join(savepath, stl_to_plot.rstrip(
-            '.txt') + f'vsEn_waterfall_from{num1}to{num2}')
+        xlabel = "Energy (eV)"
+        ylabel = "Position (nm)"
+        zlabel = "Intensity (arb. units)"
+        savename = os.path.join(
+            savepath, stl_to_plot.rstrip(".txt") + f"vsEn_waterfall_from{num1}to{num2}"
+        )
 
-        param_plot_3d(i, ax, xlabel, ylabel, zlabel, s,
-                      date, spectrum_number, savename)
+        param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, savename)
 
         i = 4
         ax = ax4
-        xlabel = 'Wavelength (nm)'
-        ylabel = 'Intensity (arb. units)'
-        savename = os.path.join(savepath, stl_to_plot.rstrip(
-            '.txt') + f'vsWl_2D_from{num1}to{num2}')
+        xlabel = "Wavelength (nm)"
+        ylabel = "Intensity (arb. units)"
+        savename = os.path.join(
+            savepath, stl_to_plot.rstrip(".txt") + f"vsWl_2D_from{num1}to{num2}"
+        )
 
-        param_plot_2d(i, ax, xlabel, ylabel, s, date,
-                      spectrum_number, savename)
+        param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename)
 
         i = 5
         ax = ax5
-        xlabel = 'Energy (eV)'
-        ylabel = 'Intensity (arb. units)'
+        xlabel = "Energy (eV)"
+        ylabel = "Intensity (arb. units)"
 
         if SVG:
-            savename = os.path.join(savepath, stl_to_plot.rstrip(
-                '.txt') + f'vsEn_2D_from{num1}to{num2}.svg')
+            savename = os.path.join(
+                savepath, stl_to_plot.rstrip(".txt") + f"vsEn_2D_from{num1}to{num2}.svg"
+            )
         else:
-            savename = os.path.join(savepath, stl_to_plot.rstrip(
-                '.txt') + f'vsEn_2D_from{num1}to{num2}')
+            savename = os.path.join(
+                savepath, stl_to_plot.rstrip(".txt") + f"vsEn_2D_from{num1}to{num2}"
+            )
 
-        param_plot_2d(i, ax, xlabel, ylabel, s, date,
-                      spectrum_number, savename)
+        param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename)
 
-        plt.close('all')
+        plt.close("all")
+
 
 def plot_one_spectrum(X, Y, couleur, xlabel, ylabel, s, s0, savename, ax):
     """Plots a single spectrum and saves the figure.
-    
+
     Args:
         X (array-like): The x-axis data.
         Y (array-like): The y-axis data.
@@ -279,19 +334,46 @@ def plot_one_spectrum(X, Y, couleur, xlabel, ylabel, s, s0, savename, ax):
     plt.plot(X, Y, couleur)
     plt.xlabel(xlabel, fontsize=16)
     plt.xlabel(ylabel, fontsize=16)
-    plt.ticklabel_format(axis = 'y', style = 'sci', scilimits=(0,0))
-    plt.rcParams.update({'font.size': 8})
-    ax.tick_params(axis='x', labelsize=16)
-    ax.tick_params(axis='y', labelsize=16)
-    ax.yaxis.get_offset_text().set_fontsize(12) # get the axis offsetText as a Text instance
-    plt.text(0.10, 1.1, s, ha='center', va='center', transform=ax.transAxes, fontsize=12)
-    plt.text(0.85, 0.5, s0, ha='center', va='center', transform=ax.transAxes, fontsize=14, color='r')
-    plt.savefig(savename, dpi = 300, bbox_inches='tight')
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.rcParams.update({"font.size": 8})
+    ax.tick_params(axis="x", labelsize=16)
+    ax.tick_params(axis="y", labelsize=16)
+    ax.yaxis.get_offset_text().set_fontsize(
+        12
+    )  # get the axis offsetText as a Text instance
+    plt.text(
+        0.10, 1.1, s, ha="center", va="center", transform=ax.transAxes, fontsize=12
+    )
+    plt.text(
+        0.85,
+        0.5,
+        s0,
+        ha="center",
+        va="center",
+        transform=ax.transAxes,
+        fontsize=14,
+        color="r",
+    )
+    plt.savefig(savename, dpi=300, bbox_inches="tight")
     plt.show()
 
-def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth, SVG):
+
+def plot_stl_in_grid_PCA(
+    stl_to_plot,
+    path,
+    param_dict,
+    step_linescan,
+    grid_size,
+    missing_spectra,
+    perverted_spectra,
+    Full,
+    v_min,
+    v_max,
+    Smooth,
+    SVG,
+):
     """Plots STL spectra in a grid using PCA basis.
-        
+
     Args:
         stl_to_plot (str): Filename of the STL data to plot.
         path (list): List containing [datapath2, basispath, basisname, dataname].
@@ -313,44 +395,44 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
     spectrum_number = int(stl_to_plot[7:-8])
     print(spectrum_number)
 
-    with open(os.path.join(datapath2, stl_to_plot), 'r', encoding='utf-8') as entete:
+    with open(os.path.join(datapath2, stl_to_plot), encoding="utf-8") as entete:
         int_time = int(entete.readlines()[5].split()[17][:-1])
 
     # Load data with cosmic rays already removed
 
-    stl_data = np.load(os.path.join(datapath2, 'Corrected_spectra.npy'))
-    wavelength = np.load(os.path.join(datapath2, 'Wavelength.npy'))
+    stl_data = np.load(os.path.join(datapath2, "Corrected_spectra.npy"))
+    wavelength = np.load(os.path.join(datapath2, "Wavelength.npy"))
     (m, l) = np.shape(stl_data)
 
     # Get data projected on PCA basis
     coeff = np.load(os.path.join(basispath, dataname))
     vectors = np.load(os.path.join(basispath, basisname))
-    for i in range(np.shape(vectors)[0]) :
-        vectors[i] = vectors[i]/max(np.abs(vectors[i]))
+    for i in range(np.shape(vectors)[0]):
+        vectors[i] = vectors[i] / max(np.abs(vectors[i]))
         if Smooth:
             vectors[i] = savgol_filter(vectors[i], 5, 1)
-    
+
     stl_data = np.matmul(coeff, vectors)
     print(np.shape(stl_data))
-    (m, l) = np.shape(stl_data) 
+    (m, l) = np.shape(stl_data)
 
     # Add lines of zeros for missing spectra
 
     l2 = len(missing_spectra)
-    spectra_modif = stl_data[0:m-l2]
+    spectra_modif = stl_data[0 : m - l2]
     zeroline = np.zeros(l)
     for i in missing_spectra:
-        if i > m-l2-1:
+        if i > m - l2 - 1:
             spectra_modif = np.append(spectra_modif, [zeroline], axis=0)
         else:
             spectra_modif = np.insert(spectra_modif, i, zeroline, axis=0)
 
     # Reshape plots
     if not Full:
-        W1 = 1240/v_min
-        W2 = 1240/v_max
-        i1 = np.argmin(np.abs(wavelength-W1))
-        i2 = np.argmin(np.abs(wavelength-W2))
+        W1 = 1240 / v_min
+        W2 = 1240 / v_max
+        i1 = np.argmin(np.abs(wavelength - W1))
+        i2 = np.argmin(np.abs(wavelength - W2))
 
     else:
         i1 = 0
@@ -359,35 +441,33 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
     # Plot STL spectra in grid of size: grid_size*grid_size
 
     for g in range(grid_size):
+        num1 = g * grid_size
+        num2 = (g + 1) * grid_size
 
-        num1 = g*grid_size
-        num2 = (g+1)*grid_size
-
-        energy = 1240/wavelength
+        energy = 1240 / wavelength
         spectra = spectra_modif[num1:num2]
 
-    # Plot the data: create the 4 figures for plot
+        # Plot the data: create the 4 figures for plot
 
         fig2 = plt.figure(2, figsize=[9, 6])
-        ax2 = fig2.add_subplot(111, projection='3d')
+        fig2.add_subplot(111, projection="3d")
 
         fig3 = plt.figure(3, figsize=[9, 6])
-        ax3 = fig3.add_subplot(111, projection='3d')
+        ax3 = fig3.add_subplot(111, projection="3d")
 
         fig4 = plt.figure(4, figsize=[7, 5])
-        ax4 = fig4.add_subplot(111)
+        fig4.add_subplot(111)
 
         fig5 = plt.figure(5, figsize=[7, 5])
         ax5 = fig5.add_subplot(111)
 
-        for k in range(num2-1, num1-1, -1):
-
+        for k in range(num2 - 1, num1 - 1, -1):
             # remove perverted spectra and lines of zeros added at missing spectra places
             if k in missing_spectra or k in perverted_spectra:
                 continue
 
             j = k - num1
-            couleur = j/(num2-num1)
+            couleur = j / (num2 - num1)
             # cmap = plt.cm.jet
             cmap = plt.cm.rainbow
 
@@ -397,9 +477,9 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
             if Smooth:
                 intj = savgol_filter(intj, 5, 1)
 
-        # Create third direction for 3D graph
+            # Create third direction for 3D graph
             Y = np.empty(len(intj))
-            Y.fill((j+0.5)*step_linescan)
+            Y.fill((j + 0.5) * step_linescan)
 
             # # Corrected data vs wl 3D
             # plt.figure(2)
@@ -408,8 +488,14 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
 
             # Corrected data vs En 3D
             plt.figure(3)
-            plt.plot(energy[i1:i2], Y[i1:i2], intj[i1:i2],
-                     '-', color=cmap(couleur), linewidth=0.7)
+            plt.plot(
+                energy[i1:i2],
+                Y[i1:i2],
+                intj[i1:i2],
+                "-",
+                color=cmap(couleur),
+                linewidth=0.7,
+            )
 
             # # Corrected data vs wl 2D
             # plt.figure(4)
@@ -418,22 +504,28 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
 
             # Corrected data vs En 2D
             plt.figure(5)
-            plt.plot(energy[i1:i2], intj[i1:i2], '-',
-                     color=cmap(couleur), linewidth=1, label='#{}'.format(Y[0]))
+            plt.plot(
+                energy[i1:i2],
+                intj[i1:i2],
+                "-",
+                color=cmap(couleur),
+                linewidth=1,
+                label=f"#{Y[0]}",
+            )
 
         # Plotting parameters for graphs and saving
         if spectrum_number in param_dict:
-            s = f'line{g} ; {param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms'
+            s = f"line{g} ; {param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms"
         else:
-            s = f'{int_time}ms'
+            s = f"{int_time}ms"
 
         foldcontents = os.listdir(basispath)
-        foldername = 'Plot_spectra'
+        foldername = "Plot_spectra"
         if Smooth:
-            foldername += '_Smooth'
+            foldername += "_Smooth"
         if foldername not in foldcontents:
-            os.makedirs(os.path.join(basispath,foldername))
-        savepath = os.path.join(basispath,foldername)
+            os.makedirs(os.path.join(basispath, foldername))
+        savepath = os.path.join(basispath, foldername)
 
         # i = 2
         # ax = ax2
@@ -448,19 +540,21 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
 
         i = 3
         ax = ax3
-        xlabel = 'Energy (eV)'
-        ylabel = 'Position (nm)'
-        zlabel = 'Intensity (arb. units)'
+        xlabel = "Energy (eV)"
+        ylabel = "Position (nm)"
+        zlabel = "Intensity (arb. units)"
         if SVG:
-            savename = os.path.join(savepath, stl_to_plot.rstrip(
-                '.txt') + f'vsEn_waterfall_from{num1}to{num2}.svg')
+            savename = os.path.join(
+                savepath,
+                stl_to_plot.rstrip(".txt") + f"vsEn_waterfall_from{num1}to{num2}.svg",
+            )
         else:
-            savename = os.path.join(savepath, stl_to_plot.rstrip(
-                '.txt') + f'vsEn_waterfall_from{num1}to{num2}')
+            savename = os.path.join(
+                savepath,
+                stl_to_plot.rstrip(".txt") + f"vsEn_waterfall_from{num1}to{num2}",
+            )
 
-
-        param_plot_3d(i, ax, xlabel, ylabel, zlabel, s,
-                      date, spectrum_number, savename)
+        param_plot_3d(i, ax, xlabel, ylabel, zlabel, s, date, spectrum_number, savename)
 
         # i = 4
         # ax = ax4
@@ -474,24 +568,44 @@ def plot_stl_in_grid_PCA(stl_to_plot, path, param_dict, step_linescan, grid_size
 
         i = 5
         ax = ax5
-        xlabel = 'Energy (eV)'
-        ylabel = 'Intensity (arb. units)'
+        xlabel = "Energy (eV)"
+        ylabel = "Intensity (arb. units)"
         if SVG:
-            savename = os.path.join(savepath, stl_to_plot.rstrip(
-                '.txt') + f'vsEn_2D_from{num1}to{num2}.svg')
+            savename = os.path.join(
+                savepath, stl_to_plot.rstrip(".txt") + f"vsEn_2D_from{num1}to{num2}.svg"
+            )
         else:
-            savename = os.path.join(savepath, stl_to_plot.rstrip(
-                '.txt') + f'vsEn_2D_from{num1}to{num2}')
+            savename = os.path.join(
+                savepath, stl_to_plot.rstrip(".txt") + f"vsEn_2D_from{num1}to{num2}"
+            )
 
-        param_plot_2d(i, ax, xlabel, ylabel, s, date,
-                      spectrum_number, savename)
-        
+        param_plot_2d(i, ax, xlabel, ylabel, s, date, spectrum_number, savename)
+
         # Save data in text file
-        np.savetxt(os.path.join(savepath, stl_to_plot.rstrip('.txt') + f'txt_from{num1}to{num2}.txt'.format(num1, num2)), spectra.T, delimiter='\t')
+        np.savetxt(
+            os.path.join(
+                savepath,
+                stl_to_plot.rstrip(".txt")
+                + f"txt_from{num1}to{num2}.txt".format(num1, num2),
+            ),
+            spectra.T,
+            delimiter="\t",
+        )
 
-        plt.close('all')
+        plt.close("all")
 
-def plot_sum_spectra(stl_to_plot, datapath2, param_dict, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth):
+
+def plot_sum_spectra(
+    stl_to_plot,
+    datapath2,
+    param_dict,
+    missing_spectra,
+    perverted_spectra,
+    Full,
+    v_min,
+    v_max,
+    Smooth,
+):
     """Plot the sum of the spectra including the FWHM of the main peak
 
     Args:
@@ -509,23 +623,23 @@ def plot_sum_spectra(stl_to_plot, datapath2, param_dict, missing_spectra, perver
     spectrum_number = int(stl_to_plot[7:-8])
     print(spectrum_number)
 
-    with open(os.path.join(datapath2, stl_to_plot), 'r', encoding='utf-8') as entete:
+    with open(os.path.join(datapath2, stl_to_plot), encoding="utf-8") as entete:
         int_time = int(entete.readlines()[5].split()[17][:-1])
-    
+
     # entete = open(os.path.join(datapath2, STL_to_plot), 'r')
     # int_time = int(entete.readlines()[5].split()[17][:-1])
 
     # Load data with cosmic rays already removed
 
-    stl_data = np.load(os.path.join(datapath2, 'Corrected_spectra.npy'))
-    wavelength = np.load(os.path.join(datapath2, 'Wavelength.npy'))
+    stl_data = np.load(os.path.join(datapath2, "Corrected_spectra.npy"))
+    wavelength = np.load(os.path.join(datapath2, "Wavelength.npy"))
     (m, l) = np.shape(stl_data)
 
     # Saving folder
     foldcontents = os.listdir(datapath2)
-    foldername = 'Plot_spectra'
+    foldername = "Plot_spectra"
     if Smooth:
-        foldername += '_Smooth'
+        foldername += "_Smooth"
     if foldername not in foldcontents:
         os.makedirs(os.path.join(datapath2, foldername))
     savepath = os.path.join(datapath2, foldername)
@@ -533,26 +647,26 @@ def plot_sum_spectra(stl_to_plot, datapath2, param_dict, missing_spectra, perver
     # Add lines of zeros for missing spectra
 
     l2 = len(missing_spectra)
-    spectra_modif = stl_data[0:m-l2]
+    spectra_modif = stl_data[0 : m - l2]
     zeroline = np.zeros(l)
     for i in missing_spectra or perverted_spectra:
-        if i > m-l2-1:
+        if i > m - l2 - 1:
             spectra_modif = np.append(spectra_modif, [zeroline], axis=0)
         else:
             spectra_modif = np.insert(spectra_modif, i, zeroline, axis=0)
 
     # Reshape plots
     if not Full:
-        W1 = 1240/v_min
-        W2 = 1240/v_max
-        i1 = np.argmin(np.abs(wavelength-W1))
-        i2 = np.argmin(np.abs(wavelength-W2))
+        W1 = 1240 / v_min
+        W2 = 1240 / v_max
+        i1 = np.argmin(np.abs(wavelength - W1))
+        i2 = np.argmin(np.abs(wavelength - W2))
 
     else:
         i1 = 0
         i2 = -1
 
-    energy = 1240/wavelength
+    energy = 1240 / wavelength
 
     sum_stl = np.sum(stl_data, axis=0)
 
@@ -565,26 +679,46 @@ def plot_sum_spectra(stl_to_plot, datapath2, param_dict, missing_spectra, perver
     fwhm = x_fwhm[-1] - x_fwhm[0]
 
     if spectrum_number in param_dict:
-        s = f'{param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms'
+        s = f"{param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms"
     else:
-        s = f'{int_time}ms'
+        s = f"{int_time}ms"
 
-    plt.plot(energy[i1:i2], sum_stl[i1:i2], 'k', label='summed spectra')
-    plt.hlines(half_max_spectrum, x_fwhm[0], x_fwhm[1], color='r', linewidth=2, label='FWHM')
-    plt.text((x_fwhm[0] + x_fwhm[-1]) / 2, half_max_spectrum * 1.1, f"{fwhm:.3f}", color="r", fontsize=10, ha="center")
+    plt.plot(energy[i1:i2], sum_stl[i1:i2], "k", label="summed spectra")
+    plt.hlines(
+        half_max_spectrum, x_fwhm[0], x_fwhm[1], color="r", linewidth=2, label="FWHM"
+    )
+    plt.text(
+        (x_fwhm[0] + x_fwhm[-1]) / 2,
+        half_max_spectrum * 1.1,
+        f"{fwhm:.3f}",
+        color="r",
+        fontsize=10,
+        ha="center",
+    )
 
-    plt.xlabel('Energy (eV)', fontsize=16)
-    plt.ylabel('Intensity (arb. units)', fontsize=16)
+    plt.xlabel("Energy (eV)", fontsize=16)
+    plt.ylabel("Intensity (arb. units)", fontsize=16)
     plt.title(s)
-    plt.ticklabel_format(axis = 'y', style = 'sci', scilimits=(0,0))
-    plt.rcParams.update({'font.size': 8})
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.rcParams.update({"font.size": 8})
 
-    savename = os.path.join(savepath, stl_to_plot.rstrip('.txt') + '_sum_spectra')
-    plt.savefig(savename, dpi=300, bbox_inches='tight')
-    
+    savename = os.path.join(savepath, stl_to_plot.rstrip(".txt") + "_sum_spectra")
+    plt.savefig(savename, dpi=300, bbox_inches="tight")
+
     plt.show()
 
-def plot_sum_spectra_PCA(stl_to_plot, path, param_dict, missing_spectra, perverted_spectra, Full, v_min, v_max, Smooth):
+
+def plot_sum_spectra_PCA(
+    stl_to_plot,
+    path,
+    param_dict,
+    missing_spectra,
+    perverted_spectra,
+    Full,
+    v_min,
+    v_max,
+    Smooth,
+):
     """Plot the sum of the PCA spectra including the FWHM of the main peak
 
     Args:
@@ -604,20 +738,20 @@ def plot_sum_spectra_PCA(stl_to_plot, path, param_dict, missing_spectra, pervert
     spectrum_number = int(stl_to_plot[7:-8])
     print(spectrum_number)
 
-    with open(os.path.join(datapath2, stl_to_plot), 'r', encoding='utf-8') as entete:
+    with open(os.path.join(datapath2, stl_to_plot), encoding="utf-8") as entete:
         int_time = int(entete.readlines()[5].split()[17][:-1])
 
     # Load data with cosmic rays already removed
 
-    stl_data = np.load(os.path.join(datapath2, 'Corrected_spectra.npy'))
-    wavelength = np.load(os.path.join(datapath2, 'Wavelength.npy'))
+    stl_data = np.load(os.path.join(datapath2, "Corrected_spectra.npy"))
+    wavelength = np.load(os.path.join(datapath2, "Wavelength.npy"))
     (m, l) = np.shape(stl_data)
 
     # Get data projected on PCA basis
     coeff = np.load(os.path.join(basispath, dataname))
     vectors = np.load(os.path.join(basispath, basisname))
-    for i in range(np.shape(vectors)[0]) :
-        vectors[i] = vectors[i]/max(np.abs(vectors[i]))
+    for i in range(np.shape(vectors)[0]):
+        vectors[i] = vectors[i] / max(np.abs(vectors[i]))
         if Smooth:
             vectors[i] = savgol_filter(vectors[i], 5, 1)
     stl_data = np.matmul(coeff, vectors)
@@ -627,42 +761,41 @@ def plot_sum_spectra_PCA(stl_to_plot, path, param_dict, missing_spectra, pervert
     # Saving folder
 
     foldcontents = os.listdir(basispath)
-    foldername = 'Plot_spectra'
+    foldername = "Plot_spectra"
     if Smooth:
-        foldername += '_Smooth'
+        foldername += "_Smooth"
     if foldername not in foldcontents:
-        os.makedirs(os.path.join(basispath,foldername))
-    savepath = os.path.join(basispath,foldername)
-
+        os.makedirs(os.path.join(basispath, foldername))
+    savepath = os.path.join(basispath, foldername)
 
     # Add lines of zeros for missing spectra
 
     l2 = len(missing_spectra)
-    spectra_modif = stl_data[0:m-l2]
+    spectra_modif = stl_data[0 : m - l2]
     zeroline = np.zeros(l)
     for i in missing_spectra or perverted_spectra:
-        if i > m-l2-1:
+        if i > m - l2 - 1:
             spectra_modif = np.append(spectra_modif, [zeroline], axis=0)
         else:
             spectra_modif = np.insert(spectra_modif, i, zeroline, axis=0)
 
     # Reshape plots
     if not Full:
-        W1 = 1240/v_min
-        W2 = 1240/v_max
-        i1 = np.argmin(np.abs(wavelength-W1))
-        i2 = np.argmin(np.abs(wavelength-W2))
+        W1 = 1240 / v_min
+        W2 = 1240 / v_max
+        i1 = np.argmin(np.abs(wavelength - W1))
+        i2 = np.argmin(np.abs(wavelength - W2))
 
     else:
         i1 = 0
         i2 = -1
 
-    energy = 1240/wavelength
+    energy = 1240 / wavelength
 
     sum_stl = np.sum(stl_data, axis=0)
 
     ### Finding the FWHM for the summed spectra
-    
+
     max_spectrum = np.max(sum_stl)
     half_max_spectrum = max_spectrum / 2
     indices = np.where(sum_stl >= half_max_spectrum)[0]
@@ -670,34 +803,44 @@ def plot_sum_spectra_PCA(stl_to_plot, path, param_dict, missing_spectra, pervert
     fwhm = x_fwhm[-1] - x_fwhm[0]
 
     if spectrum_number in param_dict:
-        s = f'{param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms'
+        s = f"{param_dict[spectrum_number][0]}V ; {param_dict[spectrum_number][1]}nA ; VLED = {param_dict[spectrum_number][2]}V ; {int_time}ms"
     else:
-        s = f'{int_time}ms'
+        s = f"{int_time}ms"
 
-    plt.plot(energy[i1:i2], sum_stl[i1:i2], 'k', label='summed spectra')
-    plt.hlines(half_max_spectrum, x_fwhm[0], x_fwhm[1], color='r', linewidth=2, label='FWHM')
-    plt.text((x_fwhm[0] + x_fwhm[-1]) / 2, half_max_spectrum * 1.1, f"{fwhm:.3f}", color="r", fontsize=10, ha="center")
+    plt.plot(energy[i1:i2], sum_stl[i1:i2], "k", label="summed spectra")
+    plt.hlines(
+        half_max_spectrum, x_fwhm[0], x_fwhm[1], color="r", linewidth=2, label="FWHM"
+    )
+    plt.text(
+        (x_fwhm[0] + x_fwhm[-1]) / 2,
+        half_max_spectrum * 1.1,
+        f"{fwhm:.3f}",
+        color="r",
+        fontsize=10,
+        ha="center",
+    )
 
-    plt.xlabel('Energy (eV)', fontsize=16)
-    plt.ylabel('Intensity (arb. units)', fontsize=16)
+    plt.xlabel("Energy (eV)", fontsize=16)
+    plt.ylabel("Intensity (arb. units)", fontsize=16)
     plt.title(s)
-    plt.ticklabel_format(axis = 'y', style = 'sci', scilimits=(0,0))
-    plt.rcParams.update({'font.size': 8})
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.rcParams.update({"font.size": 8})
 
-    savename = os.path.join(savepath, stl_to_plot.rstrip('.txt') + '_sum_spectra')
-    plt.savefig(savename, dpi=300, bbox_inches='tight')
+    savename = os.path.join(savepath, stl_to_plot.rstrip(".txt") + "_sum_spectra")
+    plt.savefig(savename, dpi=300, bbox_inches="tight")
 
-    plt.xlabel('Energy (eV)', fontsize=16)
-    plt.ylabel('Intensity (arb. units)', fontsize=16)
+    plt.xlabel("Energy (eV)", fontsize=16)
+    plt.ylabel("Intensity (arb. units)", fontsize=16)
     plt.title(s)
-    plt.ticklabel_format(axis = 'y', style = 'sci', scilimits=(0,0))
-    plt.rcParams.update({'font.size': 8})
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.rcParams.update({"font.size": 8})
     plt.legend()
 
-    savename = os.path.join(savepath, stl_to_plot.rstrip('.txt') + '_sum_spectra')
-    plt.savefig(savename, dpi=300, bbox_inches='tight')
-    
+    savename = os.path.join(savepath, stl_to_plot.rstrip(".txt") + "_sum_spectra")
+    plt.savefig(savename, dpi=300, bbox_inches="tight")
+
     plt.show()
+
 
 def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
     """Integrate the STLM map spectra and save the result in a txt file.
@@ -715,17 +858,17 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
 
     ## Use the PCA data
     if PCA:
-        name_folder = '{}vecteurs_propres'.format(n)
+        name_folder = f"{n}vecteurs_propres"
         basispath = os.path.join(DATA_PATH2, name_folder)
-        basisname = "{}vecteurs_propres.npy".format(n)
-        dataname = 'coeff_projection_from0to1024.npy'
+        basisname = f"{n}vecteurs_propres.npy"
+        dataname = "coeff_projection_from0to1024.npy"
         # Saving path
         foldcontents = os.listdir(basispath)
-        folder_name = 'Correlations'
+        folder_name = "Correlations"
         if folder_name not in foldcontents:
             os.makedirs(os.path.join(basispath, folder_name))
         saving_path = os.path.join(basispath, folder_name)
-        
+
         ##Get data projected on PCA basis
         coeff = np.load(os.path.join(basispath, dataname))
         vectors = np.load(os.path.join(basispath, basisname))
@@ -737,21 +880,23 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
         # print(m, l)
 
         ## Get wavelength and energy
-        name_wl = 'Wavelength'
-        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
+        name_wl = "Wavelength"
+        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + ".npy"))
         energy = 1240 / wavelength
 
     ## Use the raw data
     else:
         ## Get already corrected data
-        name_data = 'Corrected_spectra'  # 'Interference_Corrected_spectra' #'Corrected_spectra'
-        name_wl = 'Wavelength'
-        STL_data = np.load(os.path.join(DATA_PATH2, name_data + '.npy'))
-        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
+        name_data = (
+            "Corrected_spectra"  # 'Interference_Corrected_spectra' #'Corrected_spectra'
+        )
+        name_wl = "Wavelength"
+        STL_data = np.load(os.path.join(DATA_PATH2, name_data + ".npy"))
+        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + ".npy"))
         energy = 1240 / wavelength
         # Saving path
         foldcontents = os.listdir(DATA_PATH2)
-        folder_name = 'Correlations'
+        folder_name = "Correlations"
         if folder_name not in foldcontents:
             os.makedirs(os.path.join(DATA_PATH2, folder_name))
         saving_path = os.path.join(DATA_PATH2, folder_name)
@@ -759,10 +904,10 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
         # (m, l) = np.shape(STL_data)
         # print(m, l)
 
-        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + '.npy'))
+        wavelength = np.load(os.path.join(DATA_PATH2, name_wl + ".npy"))
         energy = 1240 / wavelength
 
-    #Bornes intégration
+    # Bornes intégration
     W1 = 1240 / E1
     W2 = 1240 / E2
     i1 = np.argmin(np.abs(wavelength - W1))
@@ -770,11 +915,10 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
     #    i1 = 0
     #    i2 = -1
 
-    liste_spectra = np.arange(0, m*l, 1)
+    liste_spectra = np.arange(0, m * l, 1)
     list_intg = []
 
     for j in liste_spectra:
-
         print(j)
 
         spectrum = STL_data[j]
@@ -788,4 +932,11 @@ def integrate_data(DATA_PATH2, PCA, n, Smooth, E1, E2, m, l):
     array_area = np.array(list_intg).reshape(m, l)
     array_area = np.flip(array_area, axis=1)
 
-    np.savetxt(os.path.join(saving_path, f'Intg_matrix_from_{round(1240/W1, 2)}_to_{round(1240/W2, 2)}eV.txt'), array_area, delimiter='\t')
+    np.savetxt(
+        os.path.join(
+            saving_path,
+            f"Intg_matrix_from_{round(1240 / W1, 2)}_to_{round(1240 / W2, 2)}eV.txt",
+        ),
+        array_area,
+        delimiter="\t",
+    )

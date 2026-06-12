@@ -1,9 +1,9 @@
 """Removes noise from the raw data using the Principal Componants Ananlysis method."""
 
-from PCA_functions import perform_PCA, project_on_PCA_basis
+from PCA_functions import perform_PCA
 
-datapath = 'Demo_Data/STL_8'
-n = 7 #number of eigen vectors
+datapath = "Demo_Data/STL_8"
+n = 7  # number of eigen vectors
 v_min = 1.5
 v_max = 3.5
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Removing the cosmic rays from the spectra and saving the corrected spectra.
 
@@ -8,12 +7,14 @@ Created on Wed Aug 18 15:46:36 2021
 """
 
 import os
+
 import numpy as np
 from scipy.interpolate import interp1d
-from utils_EA_0 import LoadWavelet1D, CleanLine
 
-DATA_PATH = 'Demo_Data'
-DEDICATED_FOLDER = 'STL_8'
+from utils_EA_0 import CleanLine, LoadWavelet1D
+
+DATA_PATH = "Demo_Data"
+DEDICATED_FOLDER = "STL_8"
 DATA_PATH_2 = os.path.join(DATA_PATH, DEDICATED_FOLDER)
 DATA_NAME = "280825-8-STL.txt"
 
@@ -48,13 +49,13 @@ def find_cosmic_rays_wavelets(data_line):
 
 def find_points_to_remove(PosRC):
     """
-        Adds an index after each cosmic ray position to PosRC.
+    Adds an index after each cosmic ray position to PosRC.
 
-        Args:
-            PosRC (list): Positions of the points touched by the cosmic rays
+    Args:
+        PosRC (list): Positions of the points touched by the cosmic rays
 
-        Returns:
-            indices (list): Updated list of positions including the index after each cosmic ray
+    Returns:
+        indices (list): Updated list of positions including the index after each cosmic ray
     """
 
     indices = []
@@ -69,7 +70,7 @@ def find_points_to_remove(PosRC):
 
 
 def remove_cosmic_rays_2(intensity, wavelength, PosRC, BGfix):
-    """ Removes cosmic rays from the intensity data by interpolating over the affected points.
+    """Removes cosmic rays from the intensity data by interpolating over the affected points.
 
     Args:
         intensity (np.array): Light intensity array.
@@ -79,7 +80,7 @@ def remove_cosmic_rays_2(intensity, wavelength, PosRC, BGfix):
 
     Returns:
         tuple: A tuple containing:
-            - intensity_corrected (np.array): The corrected intensity 
+            - intensity_corrected (np.array): The corrected intensity
             array with cosmic rays removed.
             - n (int): The number of points that were corrected.
     """
@@ -104,7 +105,7 @@ def remove_cosmic_rays_2(intensity, wavelength, PosRC, BGfix):
     wavelength_2 = np.delete(wavelength, indices)
     intensity2 = np.delete(intensity_corrected, indices)
 
-    f2 = interp1d(wavelength_2, intensity2, kind='linear')
+    f2 = interp1d(wavelength_2, intensity2, kind="linear")
 
     for i in indices:
         intensity_corrected[i] = f2(wavelength[i])
@@ -113,7 +114,7 @@ def remove_cosmic_rays_2(intensity, wavelength, PosRC, BGfix):
 
 
 def bin_array(array):
-    """ Reduces the size of the input array by averaging every four elements.
+    """Reduces the size of the input array by averaging every four elements.
 
     Args:
         array (numpy.ndarray): The input array to be binned. The length of the array should be a multiple of 4.
@@ -126,8 +127,9 @@ def bin_array(array):
     new_array = np.zeros(l, dtype=array.dtype)
 
     for i in range(l):
-        new_array[i] = (array[4 * i] + array[4 * i + 1] +
-                        array[4 * i + 2] + array[4 * i + 3]) / 4
+        new_array[i] = (
+            array[4 * i] + array[4 * i + 1] + array[4 * i + 2] + array[4 * i + 3]
+        ) / 4
 
     return new_array
 
@@ -149,17 +151,17 @@ def read_and_correct_data(datapath, dataname):
 
     # Get data from file
     wavelength = STL_data[1][:]  # [:-4]
-    energy = 1240 / wavelength
+    1240 / wavelength
 
     if Binning:
         wavelength = bin_array(wavelength)
-        energy = 1240 / wavelength
+        1240 / wavelength
 
     spectra = STL_data[2:m]
 
-    name = 'Wavelength'
+    name = "Wavelength"
     if Binning:
-        name += '_Binning'
+        name += "_Binning"
 
     wavelength = np.array(wavelength)
     np.save(os.path.join(datapath, name), wavelength)
@@ -177,14 +179,14 @@ def read_and_correct_data(datapath, dataname):
         # Remove cosmic ray from data (interpolate with neighbours to replace the point) and remove constant background
         PosRC, error = find_cosmic_rays_wavelets(Intj)
         PosRC = find_points_to_remove(PosRC)
-        Intensity_corrected, n = remove_cosmic_rays_2(
-            Intj, wavelength, PosRC, BGfix)
+        Intensity_corrected, n = remove_cosmic_rays_2(Intj, wavelength, PosRC, BGfix)
         if n != 0:
             PosRC2, error = find_cosmic_rays_wavelets(Intensity_corrected)
             PosRC2 = find_points_to_remove(PosRC2)
             PosRC = list(set(PosRC + PosRC2))
             Intensity_corrected, n1 = remove_cosmic_rays_2(
-                Intensity_corrected, wavelength, PosRC, BGfix)
+                Intensity_corrected, wavelength, PosRC, BGfix
+            )
 
         n = len(PosRC)
 
@@ -197,17 +199,18 @@ def read_and_correct_data(datapath, dataname):
         if j % 10 == 0:
             print(j)
 
-    name = 'Corrected_spectra'
-    if Binning == True:
-        name += '_Binning'
+    name = "Corrected_spectra"
+    if Binning:
+        name += "_Binning"
 
-    name2 = 'Selected_spectra_for_PCA'
-    if Binning == True:
-        name2 += '_Binning'
+    name2 = "Selected_spectra_for_PCA"
+    if Binning:
+        name2 += "_Binning"
 
     corrected_spectra = np.array(corrected_spectra)
     np.save(os.path.join(datapath, name), corrected_spectra)
     selected_spectra = np.array(selected_spectra)
     np.save(os.path.join(datapath, name2), selected_spectra)
+
 
 read_and_correct_data(DATA_PATH_2, DATA_NAME)
